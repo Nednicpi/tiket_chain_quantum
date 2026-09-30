@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tiket Chain Quantum</title>
+</head><body>
+<h2>TIKET CHAIN QUANTUM</h2>
+<p>Backend: ledger.txt (GitHub Blockchain)</p>
+<button onclick="claim()">CLAIM GRATIS</button>
+<button onclick="transfer()">TRANSFER P2P</button>
+<div id="my">My Tickets: Loading...</div>
+<script>
+async function load(){
+let txt=await fetch('../ledger.txt').then(r=>r.text());
+document.getElementById('my').innerText=txt.slice(-500);
+}
+function claim(){ window.open('../mine.py') }
+function transfer(){
+let to=prompt("Transfer ke username?");
+let harga=prompt("Harga? Bebas Rp0,000000000001 atau Rp1");
+alert("Transfer P2P ke "+to+" harga "+harga+" - Bebas!");
+}
+load();
+</script>
+</body></html>
