@@ -24,7 +24,6 @@ else:
         if tiket_id in f.read():
             print(f"❌ {tiket_id} SUDAH ADA! Tidak bisa ditambang lagi!")
             sys.exit(1)
-
 print(f"Mining {tiket_id}...")
 nonce = 0
 while True:
