@@ -1,0 +1,9 @@
+{
+  "name": "Tiket Chain Quantum",
+  "short_name": "TiketChain",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "description": "Blockchain tiket P2P - harga bebas Rp0,000000000001 atau Rp1"
+}
