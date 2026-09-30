@@ -1,0 +1,40 @@
+name: TIKET Blockchain Miner
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  mine:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Mining TIKET
+        run: |
+          TITLE="${{ github.event.issue.title }}"
+          echo "Mempool: $TITLE"
+
+          # Ambil nonce dari judul
+          NONCE=$(echo $TITLE | grep -o 'NONCE-[0-9]*' | head -1)
+          if [ -z "$NONCE" ]; then NONCE="NONCE-$RANDOM"; fi
+
+          # Generate hash mirip Python kamu
+          HASH=$(echo "$TITLE $RANDOM" | sha256sum | head -c 64)
+          HASH="000${HASH:3}"
+
+          # Tulis ke ledger.txt (Burn Staking ke alamat tak bertuan)
+          echo "TIKET-${{ github.event.issue.number }} $TITLE Hash:$HASH -> BURN to 0x000000000000000000000000000000000000dEaD" >> ledger.txt
+
+          git config user.name "TIKET-MINER"
+          git config user.email "miner@tiket.chain"
+          git add ledger.txt
+          git commit -m "Mine $TITLE"
+          git push
+
+      - name: Close Issue
+        run: |
+          gh issue close ${{ github.event.issue.number }} --comment "✅ Berhasil di-mining! 6 TIKET masuk blockchain. Cek ledger.txt dan frontend."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
