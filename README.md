@@ -15,12 +15,6 @@ Berbagai Event Organizer di seluruh dunia dapat mengakses API untuk membangun ap
 ### Untuk Developer EO
 
 ```javascript
-// Contoh integrasi di aplikasi tiket
-fetch('https://raw.githubusercontent.com/rhobinjoss-bit/tiket_chain_quantum/main/ledger.txt')
-  .then(res => res.text())
-  .then(ledger => {
-    // Cek apakah tiket sudah ada / valid
-    if(ledger.includes("TIKET-COLDPLAY-001")) {
-      console.log("Tiket sudah terjual!");
-    }
-  });
+
+
+fetch('https://raw.githubusercontent.com/tiket_chain_quantum/main/ledger.txt')
