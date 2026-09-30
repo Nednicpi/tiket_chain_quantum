@@ -1,0 +1,35 @@
+name: Real Ledger Validator
+on:
+  repository_dispatch:
+    types: [mine-block]
+  workflow_dispatch:
+    inputs:
+      block_data:
+        description: 'Block line TIKET-XXX Nonce:XXX Hash:0000...'
+        required: true
+
+jobs:
+  validate-and-append:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate PoW and Append
+        run: |
+          BLOCK="${{ github.event.client_payload.block || github.event.inputs.block_data }}"
+          echo "Received: $BLOCK"
+          HASH=$(echo "$BLOCK" | grep -o 'Hash:[a-f0-9]*' | cut -d: -f2 | tr -d ' ')
+          echo "Hash: $HASH"
+          if [[ ! $HASH == 0000* ]]; then
+            echo "❌ INVALID"
+            exit 1
+          fi
+          echo "$BLOCK" >> tiket_chain_quantum/ledger.txt
+          echo "✅ Valid - appended"
+          tail -n 20 tiket_chain_quantum/ledger.txt
+      - name: Commit
+        run: |
+          git config user.name "Quantum Validator"
+          git config user.email "validator@tiket.chain"
+          git add tiket_chain_quantum/ledger.txt
+          git commit -m "⛏️ Mine: $BLOCK" || exit 0
+          git push
