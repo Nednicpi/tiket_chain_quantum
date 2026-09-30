@@ -30,4 +30,3 @@ with open("ledger.txt", "a") as f:
     f.write(f"\n{tiket_id} | TRANSFER from {owner_lama} to {owner_baru} | OWNER:{owner_baru} | NOTE:{note}")
 
 print(f"SUKSES: {tiket_id} {owner_lama} -> {owner_baru} | NOTE:{note}")
-PY
