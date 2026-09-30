@@ -1,21 +1,26 @@
-# tiket_chain_quantum
 
-Tiket with value - Blockchain Tiket Native Indonesia
-Global Supply: 100.000.000 Tiket untuk seluruh event dunia.
+## 🌍 Global Open API for Event Organizers
 
-## Tokenomics
-- Total Supply: 100,000,000 (100 Juta)
-- Mining: PoW target 0000
-- Validasi: Transparan via GitHub Actions
-- Alokasi:
-    - 60% Event Musik & Festival (60 Juta)
-    - 20% Olahraga (20 Juta)
-    - 10% Transport & Travel (10 Juta)
-    - 10% Genesis & Team (10 Juta)
+Berbagai Event Organizer di seluruh dunia dapat mengakses API untuk membangun aplikasi tiketing yang terhubung langsung ke blockchain ini.
 
-## Cara Mining
-Jalankan mine.py format: TIKET-xxx Nonce:xxx Hash:0000...
+### API Endpoints (Public)
 
-## Validasi
-Semua tiket diverifikasi otomatis oleh GitHub Actions.
-Tidak ada server private. Max 100 Juta.
+**Base URL:** `https://api.tiket-chain-quantum.org` *(coming soon, sekarang via GitHub Raw)*
+
+- `GET /ledger.txt` - Ambil semua tiket valid (100 Juta max)
+- `GET /validate?ticket=TIKET-XXX&nonce=xxx&hash=xxx` - Validasi 1 tiket
+- `POST /mine` - Submit tiket baru hasil mining PoW
+- `GET /supply` - Cek sisa supply global (Terpakai / Sisa)
+
+### Untuk Developer EO
+
+```javascript
+// Contoh integrasi di aplikasi tiket
+fetch('https://raw.githubusercontent.com/rhobinjoss-bit/tiket_chain_quantum/main/ledger.txt')
+  .then(res => res.text())
+  .then(ledger => {
+    // Cek apakah tiket sudah ada / valid
+    if(ledger.includes("TIKET-COLDPLAY-001")) {
+      console.log("Tiket sudah terjual!");
+    }
+  });
