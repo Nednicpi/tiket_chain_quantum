@@ -1,28 +1,39 @@
-import hashlib, sys
+import hashlib, sys, os
 
 def sha256(s):
     return hashlib.sha256(s.encode()).hexdigest()
 
-tiket_id = input("Masukkan ID TIKET (contoh: TIKET-COLDPLAY-001): ").strip()
+# CEK APAKAH INI GENESIS (LEDGER KOSONG)
+is_genesis = True
+try:
+    with open("ledger.txt") as f:
+        content = f.read().strip()
+        if content and len([l for l in content.split('\n') if l.strip() and not l.strip().startswith("#")]) > 0:
+            is_genesis = False
+except FileNotFoundError:
+    open("ledger.txt","w").close()
 
-# CEK ANTI-DOUBLE SEBELUM MINING
-with open("ledger.txt") as f:
-    ledger = f.read()
-    if tiket_id in ledger:
-        print(f"❌ GAGAL! {tiket_id} SUDAH ADA DI LEDGER! Tidak bisa ditambang lagi!")
-        print("Ini mencegah cloning / copy paste.")
-        sys.exit(1)
+if is_genesis:
+    tiket_id = "TIKET-GENESIS-000"
+    print(f"=== GENESIS BLOCK DETECTED ===")
+    print(f"Sistem otomatis membuat tiket pertama: {tiket_id}")
+else:
+    tiket_id = input("Masukkan ID TIKET (contoh: TIKET-COLDPLAY-001): ").strip()
+    # ANTI DOUBLE
+    with open("ledger.txt") as f:
+        if tiket_id in f.read():
+            print(f"❌ {tiket_id} SUDAH ADA! Tidak bisa ditambang lagi!")
+            sys.exit(1)
 
 print(f"Mining {tiket_id}...")
 nonce = 0
 while True:
     h = sha256(tiket_id + str(nonce))
     if h.startswith("0000"):
-        print(f"✅ KETEMU!")
+        print(f"KETEMU!")
         print(f"{tiket_id} Nonce:{nonce} Hash:{h}")
-        # LANGSUNG CATAT KE LEDGER
         with open("ledger.txt","a") as f:
             f.write(f"{tiket_id} Nonce:{nonce} Hash:{h}\n")
-        print("Sudah dicatat di ledger.txt - Push sekarang!")
+        print("-> Genesis berhasil! Push sekarang!")
         break
     nonce += 1
