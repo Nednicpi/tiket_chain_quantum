@@ -1,4 +1,3 @@
-cat > transfer.py << 'PY'
 import sys
 
 # Format: python transfer.py TIKET-GENESIS-000 Nednicpi Budi [NOTE_HARGA_BEBAS]
