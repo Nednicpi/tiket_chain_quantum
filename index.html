@@ -1,36 +1,82 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>TIKET CHAIN QUANTUM</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#6a11cb">
 <style>
-body { font-family: Arial; padding: 20px; text-align: center; }
-button { padding: 10px 15px; margin: 5px; font-weight: bold; }
-#ledger { margin-top: 20px; word-break: break-all; text-align: left; background: #f5f5f5; padding: 10px; }
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+body{background:linear-gradient(135deg,#6a11cb,#2575fc);min-height:100vh;color:#fff;padding:16px}
+.header{text-align:center;padding:20px 0}
+.card{background:#fff;color:#222;border-radius:20px;padding:18px;margin:12px 0;box-shadow:0 8px 25px rgba(0,0,0,.2)}
+.btn{width:100%;padding:15px;border:none;border-radius:12px;font-weight:800;font-size:16px;margin:7px 0;cursor:pointer}
+.btn-p{background:linear-gradient(135deg,#6a11cb,#2575fc);color:#fff}
+.btn-d{background:#111;color:#fff}
+.btn-o{background:#fff;border:2px solid #6a11cb;color:#6a11cb}
+small{color:#666}
+#ledger{font-size:10px;background:#f4f4f4;color:#333;padding:10px;border-radius:10px;max-height:180px;overflow:auto;word-break:break-all;display:none;margin-top:10px}
+.badge{background:#e8f5e9;color:#2e7d32;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:700}
 </style>
 </head>
 <body>
+<div class="header">
+<h1>🎫 TIKET CHAIN</h1>
+<p>QUANTUM • 100% Decentralized • Burn Staking</p>
+</div>
 
-<h1>TIKET CHAIN QUANTUM</h1>
-<p>Backend: ledger.txt (GitHub Blockchain)</p>
+<div class="card">
+<small>TOTAL BLOCKCHAIN</small>
+<h2 id="total">Loading...</h2>
+<span class="badge">Harga P2P Bebas: Rp 0,000000000001 ~ Bebas</span>
+<p style="font-size:12px;margin-top:6px;color:#555">Staking ke 0x...dEaD = Aman, tidak ada owner</p>
+</div>
 
-<button onclick="claim()">CLAIM GRATIS</button>
-<button onclick="transfer()">TRANSFER P2P</button>
+<div class="card">
+<button class="btn btn-p" onclick="claimReal()">🎁 CLAIM GRATIS 6 TIKET - REAL MINING</button>
+<button class="btn btn-d" onclick="transferReal()">💸 TRANSFER P2P - REAL</button>
+<button class="btn btn-o" id="installBtn" style="display:none" onclick="installApp()">⬇️ INSTALL JADI APLIKASI (Tanpa Playstore)</button>
+<button class="btn btn-o" onclick="toggleLedger()">🔍 Explorer Backend</button>
+<div id="ledger">Loading...</div>
+</div>
 
-<div id="ledger">Loading ledger...</div>
+<div class="card" style="font-size:12px;line-height:1.6">
+<b>Untuk Public:</b><br>
+1. Klik CLAIM GRATIS → akan buka GitHub → Klik Submit Issue → 6 TIKET otomatis masuk ledger.txt<br>
+2. Transfer harga bebas deal langsung<br>
+3. Klik INSTALL biar jadi app di HP kamu seperti dari Playstore
+</div>
 
 <script>
-async function loadLedger() {
-  let res = await fetch('https://raw.githubusercontent.com/nednicpi/tiket_chain_quantum/main/ledger.txt');
-  let text = await res.text();
-  document.getElementById('ledger').innerText = text.slice(-2000);
+// PWA INSTALL
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBtn').style.display='block';});
+function installApp(){
+ if(deferredPrompt) deferredPrompt.prompt();
+ else alert('Cara install: di Chrome HP klik titik 3 pojok kanan atas > Add to Home Screen / Tambahkan ke layar utama');
 }
-loadLedger();
 
-function claim() { alert('Claim 6 tiket - Mining dimulai! Check transfer.py'); }
-function transfer() { alert('Transfer P2P - Harga bebas Rp 0,000000000001'); }
-</script>
+// LOAD REAL BLOCKCHAIN
+async function loadChain(){
+ try{
+  let r=await fetch('https://raw.githubusercontent.com/Nednicpi/tiket_chain_quantum/main/ledger.txt?t='+Date.now());
+  let t=await r.text();
+  document.getElementById('ledger').innerText=t.slice(-2000);
+  let c=(t.match(/TIKET-/g)||[]).length;
+  document.getElementById('total').innerText=c+' TIKET Telah di-Mining';
+ }catch(e){document.getElementById('total').innerText='Gagal load chain';}
+}
+function toggleLedger(){
+ let el=document.getElementById('ledger');
+ el.style.display=el.style.display==='none'?'block':'none';
+ loadChain();
+}
 
-</body>
-</html>
+// REAL CLAIM - TERHUBUNG KE API BLOCKCHAIN (GitHub Issues -> Action -> ledger.txt)
+function claimReal(){
+ let nonce=Math.floor(Math.random()*1000000);
+ let userId='USER-'+Date.now().toString().slice(-6);
+ let title=`CLAIM-6-TIKET ${userId} NONCE-${nonce} BURN-to-0xdead`;
+ let body=`Mohon mining 6 TIKET%0A%0AAlamat Burn Tak Bertuan: 0x000000000000000000000000000000000000dEaD%0AHash: akan digenerate otomatis%0AHarga P2P Bebas`;
+ let url=`https://github.com/Nednicpi/tiket_chain_quantum/issues/new?title=${encodeURIComponent(title)}&
